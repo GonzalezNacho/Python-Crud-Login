@@ -2,6 +2,12 @@ from flask import Flask, render_template , request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 from decouple import config
 
+# Models: 
+from models.modelUser import ModelUser
+
+# Entities:
+from models.entities.User import User
+
 app = Flask(__name__)
 
 
@@ -69,10 +75,24 @@ def delete_contact(id):
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        print("email:", email, ", password:", password)
+        userForm = request.form['user']
+        passwordForm = request.form['password']
+        user = User(0,userForm, passwordForm)
+        loggedUser = ModelUser.login(mysql, user)
+        if loggedUser != None:
+            if loggedUser.password:
+                return redirect(url_for('Index'))
+            else:
+                flash("Invalid password ...")
+                print("Invalid password ...")
+                return render_template('login.html')    
+        else:
+            flash("User not found ...")
+            print("User not found ...")
+            return render_template('login.html')    
+        #print("user:", user, ", password:", password)
     return render_template('login.html')
+    
 
 
 if __name__ == '__main__':

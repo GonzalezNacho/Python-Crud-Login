@@ -25,8 +25,8 @@
       <h1 class="h3 mb-3 fw-normal m-auto">Please sign in</h1>
   
       <div class="form-floating">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email">
-        <label for="floatingInput">Email address</label>
+        <input type="text" class="form-control" id="floatingInput" placeholder="name" name="user">
+        <label for="floatingInput">User</label>
       </div>
       <div class="form-floating">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name ="password">
@@ -35,5 +35,15 @@
       <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
       <p class="mt-5 mb-3 text-muted">&copy; 2017-2022</p>
     </form>
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
   </main>
   {% endblock %}
