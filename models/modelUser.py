@@ -4,7 +4,6 @@ class ModelUser():
 
     @classmethod
     def login(self,db,user):
-        print(user.username)
         try:
             cursor = db.connection.cursor()
             sql= """SELECT id, username, password, fullname FROM user 
@@ -14,6 +13,22 @@ class ModelUser():
             if row != None:
                 user = User(row[0],row[1], User.check_password(row[2], user.password), row[3])
                 return user
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
+    def getById(self,db,id):
+        try:
+            cursor = db.connection.cursor()
+            sql= """SELECT id, username,  fullname FROM user 
+                    WHERE id = '{}'""".format(id)
+            cursor.execute(sql)
+            row = cursor.fetchone()
+            if row != None:
+                loggedUser = User(row[0],row[1], None, row[2])
+                return loggedUser
             else:
                 return None
         except Exception as ex:

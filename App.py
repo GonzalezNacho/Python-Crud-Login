@@ -1,5 +1,6 @@
 from flask import Flask, render_template , request, redirect, url_for, flash
 from flask_mysqldb import MySQL
+from flask_login import LoginManager, login_user, logout_user, login_required
 from decouple import config
 
 # Models: 
@@ -16,11 +17,20 @@ app.config['MYSQL_USER'] = config('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = config('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = config('MYSQL_DB') 
 mysql = MySQL(app)
+loginManagerApp = LoginManager(app)
 
 app.secret_key = 'mysecretkey'
 
+@loginManagerApp.user_loader
+def load_user(id):
+    return ModelUser.getById(mysql, id)
+
 @app.route('/')
-def Index():
+def index():
+    return redirect(url_for('login'))
+
+@app.route('/home')
+def Home():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM contacts')
     data = cur.fetchall()
@@ -37,7 +47,7 @@ def add_contact():
         cur.execute('INSERT INTO contacts (fullname, phone, email) VALUES (%s,%s,%s);',(fullname, phone, email))
         mysql.connection.commit()
         flash('Contact Added successfully')
-        return redirect(url_for('Index'))
+        return redirect(url_for('Home'))
 
 @app.route('/edit/<id>')
 def get_contact(id):
@@ -62,7 +72,7 @@ def update_contact(id):
         """, (fullname, email, phone, id))
         mysql.connection.commit()
         flash('Contact Update Successfully')
-        return redirect(url_for('Index'))
+        return redirect(url_for('Home'))
 
 @app.route('/delete/<string:id>')
 def delete_contact(id):
@@ -70,7 +80,7 @@ def delete_contact(id):
     cur.execute('DELETE FROM contacts WHERE id = {0};'.format(id))
     mysql.connection.commit()
     flash('Contact Removed successfully')
-    return redirect(url_for('Index'))
+    return redirect(url_for('Home'))
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -81,16 +91,14 @@ def login():
         loggedUser = ModelUser.login(mysql, user)
         if loggedUser != None:
             if loggedUser.password:
-                return redirect(url_for('Index'))
+                login_user(loggedUser)
+                return redirect(url_for('Home'))
             else:
                 flash("Invalid password ...")
-                print("Invalid password ...")
                 return render_template('login.html')    
         else:
             flash("User not found ...")
-            print("User not found ...")
-            return render_template('login.html')    
-        #print("user:", user, ", password:", password)
+            return render_template('login.html')
     return render_template('login.html')
     
 
