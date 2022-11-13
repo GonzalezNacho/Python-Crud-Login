@@ -30,6 +30,7 @@ def index():
     return redirect(url_for('login'))
 
 @app.route('/home')
+@login_required
 def Home():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM contacts')
@@ -101,7 +102,10 @@ def login():
             return render_template('login.html')
     return render_template('login.html')
     
-
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True)
