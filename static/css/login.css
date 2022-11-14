@@ -81,3 +81,8 @@ html,body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.botones {
+  /*background-color: #9a0b28;*/
+  background-color: #e51a2f;
+}

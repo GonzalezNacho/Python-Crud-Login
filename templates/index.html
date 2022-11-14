@@ -6,7 +6,11 @@
 {% endblock %}
 
 {% block buttonLog %}
-    <a type="link" class="btn btn-primary" href="{{ url_for('logout') }}">Logout</a>
+{% if current_user.fullname != Undefined %}
+    <a type="link" class="btn btn-danger botones" href="{{ url_for('logout') }}">Logout</a>
+{% else %}
+    <a type="link" class="btn btn-danger botones" href="{{ url_for('login') }}">Login</a>
+{% endif %}
 {% endblock %}
 
 {% block body %}
@@ -34,7 +38,7 @@
                     <input type="text" name="email" placeholder="Email" class="form-control">
                 </div>
                 <div class="form-group d-grid">
-                    <button type="submit" class="btn btn-primary btn-block mt-3 mx-auto">
+                    <button type="submit" class="btn btn-danger btn-block mt-3 mx-auto botones">
                         Save
                     </button>
                 </div>
@@ -42,7 +46,9 @@
         </div>
     </div>
     <div class="col-md-7">
+        {% if current_user.fullname != Undefined %}
         <h4>Bienvenido, {{ current_user.fullname }}</h4>
+        {% endif %}
         <table class="table table-striped table-bordered bg-white table-sm">
             <thead>
                 <td>Fullname</td>

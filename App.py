@@ -30,7 +30,7 @@ def index():
     return redirect(url_for('login'))
 
 @app.route('/home')
-@login_required
+#@login_required
 def Home():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM contacts')
@@ -107,5 +107,14 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+def status401(error):
+    return redirect(url_for('login'))
+
+def status404(error):
+    return "<h1>Página no encontrada</h1>", 404
+
+    
 if __name__ == '__main__':
+    app.register_error_handler(401, status401)
+    app.register_error_handler(404, status404)
     app.run(port = 3000, debug = True)
