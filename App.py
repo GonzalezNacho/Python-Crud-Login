@@ -33,54 +33,54 @@ def index():
 #@login_required
 def Home():
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM contacts')
+    cur.execute('SELECT * FROM products')
     data = cur.fetchall()
-    return render_template('index2.html', contacts = data)
+    return render_template('index2.html', products = data)
     
 
-@app.route('/add_contact', methods =['POST'])
-def add_contact():
+@app.route('/add_product', methods =['POST'])
+def add_product():
     if request.method == 'POST':
-        fullname = request.form['fullname']
-        phone = request.form['phone']
-        email = request.form['email']
+        name = request.form['name']
+        description = request.form['description']
+        discount = request.form['discount']
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO contacts (fullname, phone, email) VALUES (%s,%s,%s);',(fullname, phone, email))
+        cur.execute('INSERT INTO products (name, description, discount) VALUES (%s,%s,%s);',(name, description, discount))
         mysql.connection.commit()
-        flash('Contact Added successfully')
+        flash('Product Added successfully')
         return redirect(url_for('Home'))
 
 @app.route('/edit/<id>')
-def get_contact(id):
+def get_product(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM contacts WHERE id = %s', (id))
+    cur.execute('SELECT * FROM products WHERE id = %s', (id))
     data = cur.fetchall()
-    return render_template('edit-contact.html', contact = data[0])
+    return render_template('edit-contact.html', product = data[0])
 
 @app.route('/update/<string:id>', methods = ['POST'])
-def update_contact(id):
+def update_product(id):
     if request.method == 'POST':
-        fullname = request.form['fullname']
-        phone = request.form['phone']
-        email = request.form['email']
+        name = request.form['name']
+        description = request.form['description']
+        discount = request.form['discount']
         cur = mysql.connection.cursor()
         cur.execute("""
-            UPDATE contacts
-            SET fullname = %s,
-                email = %s,
-                phone = %s
+            UPDATE products
+            SET name = %s,
+                discount = %s,
+                description = %s
             WHERE id = %s; 
-        """, (fullname, email, phone, id))
+        """, (name, discount, description, id))
         mysql.connection.commit()
-        flash('Contact Update Successfully')
+        flash('Product Update Successfully')
         return redirect(url_for('Home'))
 
 @app.route('/delete/<string:id>')
-def delete_contact(id):
+def delete_product(id):
     cur = mysql.connection.cursor()
-    cur.execute('DELETE FROM contacts WHERE id = {0};'.format(id))
+    cur.execute('DELETE FROM products WHERE id = {0};'.format(id))
     mysql.connection.commit()
-    flash('Contact Removed successfully')
+    flash('Product Removed successfully')
     return redirect(url_for('Home'))
 
 @app.route('/login', methods=['GET','POST'])

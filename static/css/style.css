@@ -8,3 +8,24 @@ body {
     /*background-color: #9a0b28;*/
     background-color: #e51a2f;
 }
+
+.logueado {
+    display: flex;
+    justify-content: space-around;
+}
+
+.logueado a {
+    margin: 0 1%;
+    
+}
+
+.saludo {
+    color: #ffffff;
+    text-decoration: none;
+    
+}
+
+.saludo:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
