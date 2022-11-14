@@ -35,7 +35,7 @@ def Home():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM contacts')
     data = cur.fetchall()
-    return render_template('index.html', contacts = data)
+    return render_template('index2.html', contacts = data)
     
 
 @app.route('/add_contact', methods =['POST'])

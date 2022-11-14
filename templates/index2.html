@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+
+{% block customCss %}
+<link rel="stylesheet" href="https://bootswatch.com/5/materia/bootstrap.min.css">
+<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+{% endblock %}
+
+{% block buttonLog %}
+{% if current_user.fullname != Undefined %}
+    <a type="link" class="btn btn-danger botones" href="{{ url_for('logout') }}">Logout</a>
+{% else %}
+    <a type="link" class="btn btn-danger botones" href="{{ url_for('login') }}">Login</a>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<main>
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Album example</h1>
+                <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+                <p>
+                    <a href="#" class="btn btn-primary my-2">Main call to action</a>
+                    <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% if current_user.fullname != Undefined %}
+                <h4>Bienvenido, {{ current_user.fullname }}</h4>
+                {% endif %}
+                {% for contact in contacts %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                        <div class="card-body">
+                            <h4>{{ contact.1 }}</h4>
+                            <p class="card-text">{{ contact.3 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a href="/edit/{{ contact.0 }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a href="/delete/{{ contact.0 }}" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                </div>
+                                <small class="text-muted">-{{ contact.2 }}%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% if current_user.fullname != Undefined %}
+    <div>
+        <div class="col-6 mx-auto text-center">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <div class="card card-body">
+                <form action="/add_contact" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="fullname" placeholder="Fullname" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="phone" placeholder="Phone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="email" placeholder="Email" class="form-control">
+                    </div>
+                    <div class="form-group d-grid">
+                        <button type="submit" class="btn btn-danger btn-block mt-3 mx-auto botones">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
