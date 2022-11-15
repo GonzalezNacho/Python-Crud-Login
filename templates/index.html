@@ -18,15 +18,23 @@
 
 {% block body %}
 <main>
+    <div class="col-6 mx-auto text-center">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
     <section class="py-5 text-center container">
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">Album example</h1>
-                <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
-                <p>
-                    <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                    <a href="#" class="btn btn-secondary my-2">Secondary action</a>
-                </p>
+                <h1 class="fw-light">Offprice</h1>
+                <p class="lead text-muted">Los mejores cupones de decuento de internet a un click de distancia.</p>
             </div>
         </div>
     </section>
@@ -34,20 +42,21 @@
     <div class="album py-5 bg-light">
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% if current_user.fullname != Undefined %}
                 
-                {% endif %}
                 {% for product in products %}
                 <div class="col">
                     <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                        <img src="{{product.4}}" class="bd-placeholder-img card-img-top" alt="no">
                         <div class="card-body">
                             <h4>{{ product.1 }}</h4>
                             <p class="card-text">{{ product.2 }}</p>
+                            <p class="card-text">código: {{ product.5 }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
+                                    {% if current_user.fullname != Undefined %}
                                     <a href="/edit/{{ product.0 }}" class="btn btn-sm btn-outline-secondary">Edit</a>
                                     <a href="/delete/{{ product.0 }}" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                    {% endif %}
                                 </div>
                                 <small class="text-muted">-{{ product.3 }}%</small>
                             </div>
@@ -61,17 +70,15 @@
     {% if current_user.fullname != Undefined %}
     <div>
         <div class="col-6 mx-auto text-center">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-            <div class="card card-body">
+            <section class="py-5 text-center container">
+                <div class="row py-lg-5">
+                    <div class="col-lg-6 col-md-8 mx-auto">
+                        <h3 class="fw-light">Agregá tus cupones</h3>
+                    </div>
+                </div>
+            </section>
+
+            <div class="card card-body mb-5">
                 <form action="/add_product" method="POST">
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Name" class="form-control">
@@ -81,6 +88,9 @@
                     </div>
                     <div class="form-group">
                         <input type="text" name="discount" placeholder="Discount" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="discountCode" placeholder="Discount code" class="form-control">
                     </div>
                     <div class="form-group d-grid">
                         <button type="submit" class="btn btn-danger btn-block mt-3 mx-auto botones">
