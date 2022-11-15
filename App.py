@@ -27,7 +27,7 @@ def load_user(id):
 
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('Home'))
 
 @app.route('/home')
 #@login_required
@@ -35,7 +35,7 @@ def Home():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM products')
     data = cur.fetchall()
-    return render_template('index2.html', products = data)
+    return render_template('index.html', products = data)
     
 
 @app.route('/add_product', methods =['POST'])
@@ -55,7 +55,7 @@ def get_product(id):
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM products WHERE id = %s', (id))
     data = cur.fetchall()
-    return render_template('edit-contact.html', product = data[0])
+    return render_template('edit-product.html', product = data[0])
 
 @app.route('/update/<string:id>', methods = ['POST'])
 def update_product(id):
@@ -105,7 +105,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('Home'))
 
 def status401(error):
     return redirect(url_for('login'))
