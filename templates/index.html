@@ -80,6 +80,7 @@
 
             <div class="card card-body mb-5">
                 <form action="/add_product" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Name" class="form-control">
                     </div>

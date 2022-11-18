@@ -1,26 +1,24 @@
 from flask import Flask, render_template , request, redirect, url_for, flash
 from flask_mysqldb import MySQL
+from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
-from decouple import config
 
-# Models: 
+#Configuración
+from config import myConfig
+
+# Modelos: 
 from models.modelUser import ModelUser
 
-# Entities:
+# Entidades:
 from models.entities.User import User
 
 app = Flask(__name__)
 
-
-app.config['MYSQL_HOST'] = config('MYSQL_HOST')
-app.config['MYSQL_USER'] = config('MYSQL_USER') 
-app.config['MYSQL_PASSWORD'] = config('MYSQL_PASSWORD')
-app.config['MYSQL_DB'] = config('MYSQL_DB') 
+csrf = CSRFProtect()
 mysql = MySQL(app)
 loginManagerApp = LoginManager(app)
 
-app.secret_key = 'mysecretkey'
-
+#Rutas
 @loginManagerApp.user_loader
 def load_user(id):
     return ModelUser.getById(mysql, id)
@@ -115,14 +113,25 @@ def logout():
     logout_user()
     return redirect(url_for('Home'))
 
+# definicion de funciones para codigos de estado de respuesta http
+
+# error 401: Unauthorized, Es necesario autenticar para obtener la respuesta solicitada. Redirige al login
 def status401(error):
     return redirect(url_for('login'))
 
+# error 404: El servidor no pudo encontrar el contenido solicitado. . Devuelve el mensaje "Página no encontrada" y el codigo de estado 404
 def status404(error):
     return "<h1>Página no encontrada</h1>", 404
 
+# manejo de los codigos de error con sus respectivas funciones
 app.register_error_handler(401, status401)
 app.register_error_handler(404, status404)
+
+#se aplica configuración a la app desde el diccionario myConfig 
+app.config.from_object(myConfig['configfromEnv'])
+
+#para evitar cross site request forgery (falsificacion de formularios)
+csrf.init_app(app)
     
 if __name__ == '__main__':
     app.run(port = 3000, debug = True)
